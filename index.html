@@ -7,12 +7,14 @@
             fetch('https://sheets.googleapis.com/v4/spreadsheets/1A1A4Hx3Cjz8Kmo404UsLb2-xjF2Kr9qF0m7-S9HO8b0/values/1?key=AIzaSyBvGvIDuFrehTx_Sl2qjNEiEYAD3HT-Sl4')
             .then(response => response.json())
             .then(mycoin => {
+                let result = 0
                 mycoin.values.forEach((data,index) => {
+                    result += data[6]
                     if(index==0) return
-                    const text = `${data[0]}の損益額${data[6]}円`
-                    document.querySelector("body").insertAdjacentHTML("beforeend",`<div id="main">${text}</div>`)
+                    const text2 = `${data[0]}の損益額 ${new Intl.NumberFormat().format(data[6])}円`
+                    document.querySelector("body").insertAdjacentHTML("beforeend",`<div>${text2}</div>`)
                 })
-                document.querySelector("script").remove()
+                document.querySelector("body").insertAdjacentHTML("beforeend",`<h2>合計損益額 ${new Intl.NumberFormat().format(result)}円</h2>`)
             })
         </script>
     </body>
