@@ -9,8 +9,8 @@
             .then(mycoin => {
                 let result = 0
                 mycoin.values.forEach((data,index) => {
-                    result += data[6]
                     if(index==0) return
+                    result += data[6]
                     const text2 = `${data[0]}の損益額 ${new Intl.NumberFormat().format(data[6])}円`
                     document.querySelector("body").insertAdjacentHTML("beforeend",`<div>${text2}</div>`)
                 })
