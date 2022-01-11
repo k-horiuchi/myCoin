@@ -4,6 +4,16 @@
     </head>
     <body>
         <script>
+            fetch('https://sheets.googleapis.com/v4/spreadsheets/1A1A4Hx3Cjz8Kmo404UsLb2-xjF2Kr9qF0m7-S9HO8b0/values/1?key=AIzaSyBvGvIDuFrehTx_Sl2qjNEiEYAD3HT-Sl4')
+            .then(response => response.json())
+            .then(mycoin => {
+                mycoin.values.forEach((data,index) => {
+                    if(index==0) return
+                    const text = `${data[0]}の損益額${data[6]}円`
+                    document.querySelector("body").insertAdjacentHTML("beforeend",`<div id="main">${text}</div>`)
+                })
+                document.querySelector("script").remove()
+            })
         </script>
     </body>
 </html>
