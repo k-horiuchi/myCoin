@@ -2,21 +2,40 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <meta http-equiv="refresh" content="10; URL=https://k-horiuchi.github.io/mycoin/">
+<!--        <meta http-equiv="refresh" content="6; URL=https://k-horiuchi.github.io/mycoin/">-->
     </head>
     <body>
         <script>
             fetch('https://sheets.googleapis.com/v4/spreadsheets/1A1A4Hx3Cjz8Kmo404UsLb2-xjF2Kr9qF0m7-S9HO8b0/values/1?key=AIzaSyBvGvIDuFrehTx_Sl2qjNEiEYAD3HT-Sl4')
             .then(response => response.json())
             .then(mycoin => {
-                let result = 0
-                mycoin.values.forEach((data,index) => {
-                    if(index==0) return
-                    result += Number(data[6])
-                    const text2 = `${data[0]}の損益額 ${new Intl.NumberFormat().format(data[6])}円`
-                    document.querySelector("body").insertAdjacentHTML("beforeend",`<div>${text2}</div>`)
+                for (const index in mycoin.values) {
+                  mycoin.values[index].shift()
+                }
+                fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${mycoin.values[0].join(",")}&vs_currencies=jpy`)
+                .then(response => response.json())
+                .then(rates => {
+                    const arr = []
+                    for (const name of mycoin.values[0]) {
+                        arr.push(rates[name].jpy)
+                    }
+                    mycoin.values[4] = arr
+
+                    let all = 0
+                    for (const i in mycoin.values[0])
+                    {
+                        const name = mycoin.values[0][i]
+                        const buy = Number(mycoin.values[1][i])
+                        const amount = Number(mycoin.values[2][i])
+                        const yen = Number(mycoin.values[3][i])
+                        const sell = mycoin.values[4][i]
+                        const profit = Math.floor((sell * amount) - yen)
+                        all += profit
+                        const text = `<div>${name}の損益額 ${profit.toLocaleString()}円</div>`
+                        document.querySelector("body").insertAdjacentHTML("beforeend", text)
+                    }
+                    document.querySelector("body").insertAdjacentHTML("beforeend",`<h2>合計損益額 ${new Intl.NumberFormat().format(all)}円</h2>`)
                 })
-                document.querySelector("body").insertAdjacentHTML("beforeend",`<h2>合計損益額 ${new Intl.NumberFormat().format(result)}円</h2>`)
             })
         </script>
     </body>
